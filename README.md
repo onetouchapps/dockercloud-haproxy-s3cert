@@ -1,5 +1,10 @@
 # tutumcloud-haproxy-s3cert
 
+## Links:
+
+  - tutumcloud-haproxy-s3cert on [Docker Hub](https://hub.docker.com/r/clearreview/tutumcloud-haproxy-s3cert/)
+  - tutumcloud-haproxy-s3cert on [Github](https://github.com/onetouchapps/tutumcloud-haproxy-s3cert)
+
 ## Rationale
 
 While the [HAProxy adaptation](https://github.com/tutumcloud/haproxy) for
