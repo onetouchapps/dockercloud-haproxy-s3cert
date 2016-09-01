@@ -1,27 +1,27 @@
-# tutumcloud-haproxy-s3cert
+# dockercloud-haproxy-s3cert
 
 ## Links:
 
-  - tutumcloud-haproxy-s3cert on [Docker Hub](https://hub.docker.com/r/clearreview/tutumcloud-haproxy-s3cert/)
-  - tutumcloud-haproxy-s3cert on [Github](https://github.com/onetouchapps/tutumcloud-haproxy-s3cert)
+  - dockercloud-haproxy-s3cert on [Docker Hub](https://hub.docker.com/r/clearreview/dockercloud-haproxy-s3cert/)
+  - dockercloud-haproxy-s3cert on [Github](https://github.com/onetouchapps/dockercloud-haproxy-s3cert)
 
 ## Rationale
 
-While the [HAProxy adaptation](https://github.com/tutumcloud/haproxy) for
-Tutum / Docker Cloud is excellent and effortless to implement, it does require
+While the [HAProxy adaptation](https://github.com/docker/dockercloud-haproxy) for
+Docker Cloud is excellent and effortless to implement, it does require
 that for SSL termination, a private key and public cert pair are passed
 through to the proxy container (or its linked services) via an environment
 variable in order to be made available at runtime.
-(See the [Tutum HAProxy docs](https://github.com/tutumcloud/haproxy#ssl-termination) for details.)
+(See the [Docker Cloud HAProxy docs](https://github.com/docker/dockercloud-haproxy#ssl-termination) for details.)
 
-This is perfectly sound practice however to implement this inside a Tutum Stack,
+This is perfectly sound practice however to implement this inside a Docker Cloud Stack,
 it is probably required that you place your key/cert file (escaped) in
-the Stackfile at Tutum.
+the Stackfile at Docker Cloud.
 
 One alternative to this would be to store that same key/cert file in a private
 S3 bucket and to read that securely when the HAProxy container first starts.
 
-This repo creates an image which extends the Tutum HAProxy to provide that S3-based
+This repo creates an image which extends the Docker Cloud HAProxy to provide that S3-based
 implmentation
 
 ## Assumptions
@@ -29,7 +29,7 @@ implmentation
   - You already have a service which requires balancing
   - You will run this HAProxy derivative on an EC2 node
 
-## Implementing this within a Tutum / Docker Cloud stack
+## Implementing this within a Docker Cloud stack
 
 ### Stackfile additions
 
@@ -37,7 +37,7 @@ Add the following to the Stackfile:
 
 ```
 lb:
-  image: 'clearreview/tutumcloud-haproxy-s3cert'
+  image: 'clearreview/dockercloud-haproxy-s3cert'
   environment:
     CERT_BUCKET_IAM_ROLE: <IAM role name - see ("AWS setup" below)>
     CERT_BUCKET_NAME: <S3 bucket name for cert file>
@@ -58,11 +58,11 @@ lb:
   - "ports" - these will vary depending on whether or not you service one of - or
     both - http and https
   - "roles" - this list **has to** contain "global" for the HAProxy container
-    to have access to the Tutum API in order to be able to auto-scale in response
+    to have access to the Docker Cloud API in order to be able to auto-scale in response
     to linked service containers coming online / going offline
 
-For more info on implementing HAProxy at Tutum / Docker Cloud, see
-[Tutum HAProxy docs](https://github.com/tutumcloud/haproxy#usage-within-tutum).
+For more info on implementing HAProxy at Docker Cloud, see
+[Docker Cloud HAProxy docs](https://github.com/docker/dockercloud-haproxy#running-in-docker-cloud).
 
 ### AWS Setup
 
@@ -76,14 +76,14 @@ See the AWS docs [here](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_crede
   2. Upload that file to a private S3 bucket
   3. Create an IAM role with an access policy which allows access to that
      bucket
-  4. Create a node cluster in Tutum / Docker Cloud which is *in that IAM role*
+  4. Create a node cluster in Docker Cloud which is *in that IAM role*
     (this is an option on the "Create a node cluster" dashboard screen)
 
 #### Steps in detail
 
 ##### 1. Create a cert file
 
-In the Tutum HAProxy docs, it is clearly explained that the environment
+In the Docker Cloud HAProxy docs, it is clearly explained that the environment
 variable which contains the cert data needs to have its `\n` characters
 escaped to `\\n`. **That is not necessary for this implementation**. The code
 in this repo which collects the cert file expects it to be a standard-format
@@ -131,7 +131,7 @@ which to access the bucket.
 
 #### 4. Create a node / node cluster in that IAM role
 
-"IAM role" is one of the options when creating a node in Tutum / Docker Cloud.
+"IAM role" is one of the options when creating a node in Docker Cloud.
 Creating a node in that role will mean that it can get access to temporary
 credentials within that role, via the fixed link-local IP address 169.254.169.254.
 
@@ -140,6 +140,6 @@ address to gain temporary role credentials. Thus the container provided in this
 image is able to use these temporary credentials to access the S3 bucket and download the
 cert at startup.
 
-The startup script then escapes the downloaded file (as per the Tutum HAProxy)
+The startup script then escapes the downloaded file (as per the Docker Cloud HAProxy)
 requirements, exports it to the `DEFAULT_SSL_CERT` environment variable and then
-calls the normal entrypoint for a Tutum HAProxy container.
+calls the normal entrypoint for a Docker Cloud HAProxy container.
