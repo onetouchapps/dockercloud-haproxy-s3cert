@@ -1,0 +1,3 @@
+0000000000000000000000000000000000000000 05829cc76a8d77e2f352396f1b9f7fd6936e818d Mark Henwood <mcbhenwood@gmail.com> 1458059442 +0000	commit (initial): Collect SSL cert from S3 and pass to HAProxy
+05829cc76a8d77e2f352396f1b9f7fd6936e818d 3b058042d4645804c33137adbc907a3e6d78168f Mark Henwood <mcbhenwood@gmail.com> 1458060068 +0000	commit: Pass IAM role as environment variable
+3b058042d4645804c33137adbc907a3e6d78168f 4c1092f19f6145db40d9bca5a90e5e3b5edaeceb Mark Henwood <mcbhenwood@gmail.com> 1458060622 +0000	commit: Pass S3 object details as environment variables

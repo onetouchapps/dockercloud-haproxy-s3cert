@@ -1,0 +1,41 @@
+TODO
+
+X push repo to docker and verify its URL
+X write README
+X add a licence
+X push finalised repo version
+X set up a public DockerHub image (find out how to get a README on that)
+X Convert our implementation to use our public image
+X delete our tutum proxy repo
+X Tweet it
+
+Y Fork the tutumcloud/haproxy repo and issue a PR for the doc mistakes:
+Y  "433" s/b "443"
+Y  ports list in FORCE_SSL section are wrong; need to publish port 80 as well
+
+
+NOTES
+-----
+Env Vars:
+  CERT_BUCKET_IAM_ROLE: Get-crnodefiles
+  CERT_BUCKET_NAME: crnodefiles
+  CERT_OBJECT_NAME: certs/wild_clearreview/chain.pem
+
+  API role must be full access
+  FORCE_SSL env var for downstream app
+
+
+policy
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:Get*",
+                "s3:List*"
+            ],
+            "Resource": "arn:aws:s3:::crnodefiles/*"
+        }
+    ]
+}
