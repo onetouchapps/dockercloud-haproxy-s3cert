@@ -1,4 +1,4 @@
-FROM dockercloud/haproxy:1.5.3
+FROM dockercloud/haproxy:1.6.3
 RUN pip install --upgrade pip && \
     pip install boto3==1.2.1
 COPY haproxy-s3cert /haproxy-s3cert
